@@ -1,6 +1,8 @@
 class ArticlesController < ApplicationController
     skip_before_action :verify_authenticity_token
-
+    def read
+        @articles=Article.joins(:category).select("id","category_id","title","created_at","text","author","category_name")
+    end
     def index
         if params[:id]
             @articles=Article.find(params[:id])
@@ -11,7 +13,7 @@ class ArticlesController < ApplicationController
         elsif params[:date]
             @articles=Article.where("date BETWEEN ? AND ?",params[:date].split(",")[0],params[:date].split(",")[1])
         elsif
-            @articles=Article.all
+            @articles=Article.joins(:category).select("id","category_id","title","created_at","text","author","category_name","users_id")
         end
         render json: @articles
     end
@@ -19,7 +21,7 @@ class ArticlesController < ApplicationController
     def create
         @categories=Category.find_by(id: params[:id])
         if @categories.present?
-        @articles=Article.create(title: params[:title],text: params[:text],author: params[:author],category_id: params[:id])
+        @articles=Article.create(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],users_id: params[:users_id])
         render json: @articles
         elsif
             render html: 'Category does not exist. Add this category to create blog...'
@@ -28,7 +30,7 @@ class ArticlesController < ApplicationController
     def update
         @articles=Article.find_by(id: params[:id])
         if @articles.present?
-        @articles.update(title: params[:title],text: params[:text],author: params[:author],id: params[:id])
+        @articles.update(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],users_id: params[:users_id])
         render json: @articles
         elsif render html: 'article does not exist'
         end
