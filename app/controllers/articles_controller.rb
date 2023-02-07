@@ -1,8 +1,13 @@
 class ArticlesController < ApplicationController
-    skip_before_action :verify_authenticity_token
+    before_action :authenticate_request,except: [:read,:index,:update,:create]
+    
+    #GET /articles
     def read
-        @articles=Article.joins(:category).select("id","category_id","title","created_at","text","author","category_name")
+        @articles=Article.joins(:category).select("id","category_id","title","created_at","text","author","category_name","cover_url","user_id")
+        render json: @articles
     end
+   
+    #GET /articles/:id
     def index
         if params[:id]
             @articles=Article.find(params[:id])
@@ -18,24 +23,28 @@ class ArticlesController < ApplicationController
         render json: @articles
     end
 
+    #POST /articles
     def create
-        @categories=Category.find_by(id: params[:id])
+        @categories=Category.find_by(id: params[:category_id])
         if @categories.present?
-        @articles=Article.create(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],users_id: params[:users_id])
+        @articles=Article.create(title: params[:title],text: params[:text],description: params[:description],author: params[:author],category_id: params[:category_id],cover_url: params[:cover_url],user_id: params[:user_id])
         render json: @articles
         elsif
             render html: 'Category does not exist. Add this category to create blog...'
         end
     end
+
+    #PUT /articles/:id
     def update
-        @articles=Article.find_by(id: params[:id])
+        @articles=Article.find(params[:id])
         if @articles.present?
-        @articles.update(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],users_id: params[:users_id])
+        @articles.update(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],cover_url: params[:cover_url],user_id: params[:user_id])
         render json: @articles
         elsif render html: 'article does not exist'
         end
     end
 
+    #DELETE /articles/:id
     def delete
         @articles=Article.find_by(id: params[:id])
         if @articles.present?

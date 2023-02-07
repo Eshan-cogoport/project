@@ -10,18 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_07_105239) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_07_191342) do
   create_table "articles", force: :cascade do |t|
     t.integer "category_id"
+    t.integer "user_id"
     t.string "title"
+    t.string "description"
     t.text "text"
+    t.string "cover_url"
     t.string "author"
-    t.string "CreateArticles"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "users_id"
     t.index ["category_id"], name: "index_articles_on_category_id"
-    t.index ["users_id"], name: "index_articles_on_users_id"
+    t.index ["user_id"], name: "index_articles_on_user_id"
   end
 
   create_table "categories", force: :cascade do |t|
@@ -41,5 +42,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_07_105239) do
     t.string "username"
   end
 
-  add_foreign_key "articles", "users", column: "users_id"
+  add_foreign_key "articles", "categories"
+  add_foreign_key "articles", "users"
 end

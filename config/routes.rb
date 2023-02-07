@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
-    get "/articles", to:"articles#index"
+    get "/articles", to:"articles#read"
+    get "/articles/:id", to:"articles#index"
     post "/articles", to:"articles#create"
     put "/articles/:id", to:"articles#update"
     delete "/articles/:id", to:"articles#delete"
