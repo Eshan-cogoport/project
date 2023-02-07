@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
     
     #GET /articles
     def read
-        @articles=Article.joins(:category).select("id","category_id","title","created_at","text","author","category_name","cover_url","user_id")
+        @articles=Article.joins(:category).select("id","category_id","description","title","created_at","text","author","category_name","cover_url","user_id")
         render json: @articles
     end
    

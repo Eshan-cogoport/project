@@ -11,5 +11,7 @@ Rails.application.routes.draw do
 
     resources :users
     post '/auth/login', to:'authentication#login'
-
+    # get '/auth/login', to:'users#show'
+    post '/signup', to:'users#create'
+    get '/auth/user/:id', to:'users#create'
 end
