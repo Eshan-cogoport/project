@@ -1,24 +1,24 @@
 class ArticlesController < ApplicationController
-    before_action :authenticate_request,except: [:read,:index]
+    before_action :authenticate_request,except: [:read,:index,:searchArticle]
     
     #GET /articles
-    def read
-        @articles=Article.joins(:category,:user).select("id","category_id","name","description","title","created_at","text","name","category_name","cover_url","user_id")
-        render json: @articles
-    end
+    # def read
+    #     @articles=Article.joins(:category,:user).select("id","category_id","author","name","description","title","created_at","text","name","category_name","cover_url","user_id")
+    #     render json: @articles
+    # end
 
     #GET /articles/:id
     def index
         if params[:id]
             @articles=Article.find(params[:id])
         elsif params[:author]
-            @articles=Article.where(author: params[:author])
+            @articles=Article.where("author LIKE ?", "#{params[:author]}%")
         elsif params[:title]
             @articles=Article.where("title LIKE ?", "%#{params[:title]}%")
         elsif params[:date]
             @articles=Article.where("date BETWEEN ? AND ?",params[:date].split(",")[0],params[:date].split(",")[1])
         elsif
-            @articles=Article.joins(:category).select("id","category_id","title","created_at","text","author","category_name","users_id")
+            @articles=Article.joins(:category,:user).select("id","category_id","author","name","description","title","created_at","text","name","category_name","cover_url","user_id")
         end
         render json: @articles
     end
@@ -65,9 +65,12 @@ class ArticlesController < ApplicationController
             if @articles.user_id==@current_user.id
             Article.destroy(params[:id])
             render html: 'deletion successfull'
+            else
+            render html: 'you cannot delete posts of other users'
             end
-        elsif
+        else
         render html: 'Article does not exist'
         end
     end
+
 end
