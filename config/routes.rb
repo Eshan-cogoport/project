@@ -14,4 +14,5 @@ Rails.application.routes.draw do
     # get '/auth/login', to:'users#show'
     post '/signup', to:'users#create'
     get '/auth/user/:id', to:'users#create'
+    get '/articles_list', to:'users#list_articles'
 end
