@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-    skip_before_action :authenticate_request, only: [:create,:index ,:list_articles]
+    skip_before_action :authenticate_request, only: [:create,:index,:list_articles]
     before_action :set_user, only: [:show, :destroy]
 
         def index
@@ -12,11 +12,15 @@ class UsersController < ApplicationController
         end
 
         def list_articles
-            @articles=Article.find_by(params[:user_id])
-            @users=User.find(@articles.user_id)
-            @article_list=Article.joins(:user,:category).select("id","category_id","description","title","created_at","text","author","category_name","cover_url","user_id").where(user_id: @users.id)
-            render json: @article_list, status: :ok
+            @users=User.find_by(username: params[:username])
+            if @users.present?
+                    render json: @users.articles
+            else
+                    render json: { errors: @current_user.errors.full_messages }, 
+                    status: :unprocessable_entity 
+            end
         end
+
         def create
             # @users=User.create(name: params[:name],username: params[:username],email: params[:email], password: params[:password])
             # render json: @users

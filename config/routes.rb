@@ -7,12 +7,12 @@ Rails.application.routes.draw do
 
     post "/categories", to:"categories#create"
     get "/categories", to:"categories#index"
-    delete "/categories/:id", to:"categories#delete"
+    # delete "/categories/:id", to:"categories#delete"
+    put "/categories/:id", to:"categories#update"
 
     resources :users
     post '/auth/login', to:'authentication#login'
-    # get '/auth/login', to:'users#show'
     post '/signup', to:'users#create'
     get '/auth/user/:id', to:'users#create'
-    get '/articles_list', to:'users#list_articles'
+    get '/articles_list/:username', to:'users#list_articles'
 end

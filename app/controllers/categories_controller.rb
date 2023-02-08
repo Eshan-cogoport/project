@@ -1,5 +1,6 @@
 class CategoriesController < ApplicationController
-    before_action :authenticate_request,except: [:read]
+    before_action :authenticate_request,except: [:read,:index]
+
     def read
         @categories=Category.all
         render json: @categories
@@ -19,13 +20,15 @@ class CategoriesController < ApplicationController
         render json: @categories
         end
     end
-    def delete
-        @categories=Category.find_by(id: params[:id])
-        if @categories.present?
-            Category.destroy(params[:id])
-            render html: 'deletion successfull'
-        elsif
-        render html: 'category does not exist'
-        end
-    end
+
+    #DELETE CATEGORY
+    # def delete
+    #     @categories=Category.find_by(id: params[:id])
+    #     if @categories.present?
+    #         Category.destroy(params[:id])
+    #         render html: 'deletion successfull'
+    #     elsif
+    #     render html: 'category does not exist'
+    #     end
+    # end
 end

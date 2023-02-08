@@ -3,10 +3,10 @@ class ArticlesController < ApplicationController
     
     #GET /articles
     def read
-        @articles=Article.joins(:category).select("id","category_id","description","title","created_at","text","author","category_name","cover_url","user_id")
+        @articles=Article.joins(:category,:user).select("id","category_id","name","description","title","created_at","text","name","category_name","cover_url","user_id")
         render json: @articles
     end
-   
+
     #GET /articles/:id
     def index
         if params[:id]
@@ -39,10 +39,22 @@ class ArticlesController < ApplicationController
         @articles=Article.find(params[:id])
         if @articles.present?
             if @articles.user_id==@current_user.id
-                @articles.update(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],cover_url: params[:cover_url],user_id: params[:user_id])
+                if(params[:title])
+                @articles.update(title: params[:title])
+                end
+                if (params[:text])
+                @articles.update(text: params[:text]) 
+                end   
+                if (params[:description])
+                @articles.update(description: params[:description])
+                end
+                if (params[:cover_url])
+                @articles.update(cover_url: params[:cover_url])
+                end
             end
         render json: @articles
-        elsif render html: 'article does not exist'
+        else
+             render html: 'article does not exist'
         end
     end
 
@@ -50,8 +62,10 @@ class ArticlesController < ApplicationController
     def delete
         @articles=Article.find_by(id: params[:id])
         if @articles.present?
+            if @articles.user_id==@current_user.id
             Article.destroy(params[:id])
             render html: 'deletion successfull'
+            end
         elsif
         render html: 'Article does not exist'
         end
