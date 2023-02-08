@@ -11,6 +11,9 @@ class UsersController < ApplicationController
             render json: @current_user, status: :ok 
         end
 
+        def list_articles
+            
+        end
         def create
             # @users=User.create(name: params[:name],username: params[:username],email: params[:email], password: params[:password])
             # render json: @users

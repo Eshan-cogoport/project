@@ -1,5 +1,5 @@
 class ArticlesController < ApplicationController
-    before_action :authenticate_request,except: [:read,:index,:update,:create]
+    before_action :authenticate_request,except: [:read,:index]
     
     #GET /articles
     def read
@@ -38,7 +38,9 @@ class ArticlesController < ApplicationController
     def update
         @articles=Article.find(params[:id])
         if @articles.present?
-        @articles.update(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],cover_url: params[:cover_url],user_id: params[:user_id])
+            if @articles.user_id==@current_user.id
+                @articles.update(title: params[:title],text: params[:text],author: params[:author],category_id: params[:category_id],cover_url: params[:cover_url],user_id: params[:user_id])
+            end
         render json: @articles
         elsif render html: 'article does not exist'
         end
